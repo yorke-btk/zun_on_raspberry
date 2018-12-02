@@ -1,0 +1,44 @@
+#
+# etcd_deploy.yml
+#
+- name: make /home/pi/src
+  file:
+    path=/home/pi/src
+    state=directory
+    owner=pi
+    group=pi
+    mode=0755 
+
+- name: get go-lang
+  shell: cd /home/pi/src; wget https://storage.googleapis.com/golang/go1.8.1.linux-armv6l.tar.gz
+
+- name: decompress tar.gz 
+  shell: cd /home/pi/src; tar zxf go1.8.1.linux-armv6l.tar.gz
+
+- name: isntall go
+  shell: mv /home/pi/src/go /usr/local
+
+- name: edit bashrc
+  lineinfile:
+    dest=~/.bashrc
+    line="export PATH=$PATH:/usr/local/go/bin"
+
+- name: git clone etcd src
+  shell: cd /home/pi/src; git clone --branch v3.1.7 https://github.com/coreos/etcd.git
+
+- name: build etcd
+  shell: cd /home/pi/src/etcd; export GOOS=linux; export GOARCH=arm; export GOARM=7;export PATH=$PATH:/usr/local/go/bin;./build
+
+- name: move etcd binary into /usr/local/bin/
+  shell: mv /home/pi/src/etcd/bin/* /usr/local/bin/
+
+- name: copy etcd.service
+  copy:
+    src: ./files/etcd.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: 644 
+
+- name: start etcd
+  shell: systemctl enable etcd; systemctl start etcd

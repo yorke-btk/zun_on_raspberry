@@ -1,0 +1,14 @@
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos/etcd
+After=network.target
+[Service]
+Type=notify
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+Environment="ETCD_UNSUPPORTED_ARCH=arm"
+ExecStart=/usr/local/bin/etcd $DAEMON_ARGS
+[Install]
+WantedBy=multi-user.target
