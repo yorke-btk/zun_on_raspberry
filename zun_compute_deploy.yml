@@ -19,8 +19,11 @@
   shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
 - name: change owner of zun 
   shell: chown -R zun:zun /var/lib/zun/zun
+
 - name: install requirement pkg for zun_compute 
-  shell: cd /var/lib/zun/zun; pip install -r requirements.txt; python setup.py install
+  shell: cd /var/lib/zun/zun; pip install -r requirements.txt
+- name: setup.py install
+  shell: cd /var/lib/zun/zun; python setup.py install
 
 - name: Configure sudoer for zun users
   lineinfile:
@@ -28,13 +31,16 @@
     dest: /etc/sudoers.d/zun-rootwrap
     line: "zun ALL=(root) NOPASSWD: /usr/local/bin/zun-rootwrap /etc/zun/rootwrap.conf *"
     state: present 
-- name: copy zun.conf and zun-compute.service
+
+- name: copy zun.conf
   copy:
     src: ./files/zun.conf
-    dest: /etc
+    dest: /etc/zun/
     owner: zun
     group: zun
     mode: 644
+
+- name: copy zun-compute.service
   copy:
     src: ./files/zun-compute.service
     dest: /etc/systemd/system/
@@ -52,7 +58,7 @@
 - name: copy docker.conf
   copy:
     src: ./files/docker.conf
-    dest: /etc/systemd/system/docker.service.d
+    dest: /etc/systemd/system/docker.service.d/
     owner: root
     group: root
     mode: 644

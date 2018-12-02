@@ -16,12 +16,15 @@
     state=directory
     owner=kuryr
     group=kuryr
-    mode=0744 
+    mode=0755 
 - name: install python-pip
-  shell: apt-get install python-pip
+  shell: apt-get install -y python-pip
+
+- name: install pciutils
+  shell: apt-get install -y pciutils
 
 - name: pip install some pkgs
-  shell: pip install pbr; pip install eventlet; pip install oslo_log; pip install jsonschema; pip install oslo_privsep
+  shell: pip install pymysql
 
 - name: git clone kuryr-libnetwork
   shell: cd /var/lib/kuryr;git clone -b stable/rocky https://git.openstack.org/openstack/kuryr-libnetwork.git
@@ -29,20 +32,25 @@
   shell: cd /var/lib/kuryr/kuryr-libnetwork; git pull https://git.openstack.org/openstack/kuryr-libnetwork refs/changes/23/426623/5
 - name: change owner of kuryr-libnetwork
   shell: chown -R kuryr:kuryr /var/lib/kuryr/kuryr-libnetwork
+
 - name: install requirement pkg for kuryr-libnetwork
-  shell: cd /var/lib/kuryr/kuryr-libnetwork; pip install -r requirements.txt; python setup.py install
+  shell: cd /var/lib/kuryr/kuryr-libnetwork; pip install -r requirements.txt
+- name: setup.py install
+  shell: cd /var/lib/kuryr/kuryr-libnetwork;python setup.py install
 
 #- name: Generate a sample configuration file
 #  shell: su -s /bin/sh -c "./tools/generate_config_file_samples.sh" kuryr
 #  shell: su -s /bin/sh -c "cp etc/kuryr.conf.sample /etc/kuryr/kuryr.conf" kuryr
 
-- name: copy kuryr.conf and kuryr-libnetwork.service
+- name: copy kuryr.conf
   copy:
     src: ./files/kuryr.conf
-    dest: /etc
+    dest: /etc/kuryr/
     owner: kuryr
     group: kuryr
     mode: 644
+
+- name: copy kuryr-libnetwork.service
   copy:
     src: ./files/kuryr-libnetwork.service
     dest: /etc/systemd/system/
