@@ -21,7 +21,7 @@
   shell: apt-get install python-pip
 
 - name: pip install some pkgs
-  shell: pip install pbr; pip install eventlet; pip install oslo_log; pip install jsonschema
+  shell: pip install pbr; pip install eventlet; pip install oslo_log; pip install jsonschema; pip install oslo_privsep
 
 - name: git clone kuryr-libnetwork
   shell: cd /var/lib/kuryr;git clone -b stable/rocky https://git.openstack.org/openstack/kuryr-libnetwork.git
