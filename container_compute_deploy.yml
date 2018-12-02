@@ -1,0 +1,11 @@
+#
+# zun_compute_deploy.yml
+#
+- hosts: zun_compute
+  become: yes
+  become_user: root
+  remote_user: pi
+  tasks:
+#    - include: kuryr_deploy.yml
+#    - include: etcd_deploy.yml
+#    - include: zun_compute_deploy.yml

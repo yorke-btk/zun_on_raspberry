@@ -1,0 +1,53 @@
+#
+# kuryr_deploy.yml
+#
+
+- name: ping test
+  shell: ping -c 4 8.8.8.8
+- name: docker install
+  shell: curl -sSL https://get.docker.com/ | sh
+- name: group add kuryr
+  shell: groupadd --system kuryr
+- name: user add kuryr
+  shell: useradd --home-dir "/var/lib/kuryr" --create-home --system --shell /bin/false -g kuryr kuryr
+- name: make /etc/kuryr
+  file:
+    path=/etc/kuryr
+    state=directory
+    owner=kuryr
+    group=kuryr
+    mode=0744 
+- name: install python-pip
+  shell: apt-get install python-pip
+
+- name: pip install some pkgs
+  shell: pip install pbr; pip install eventlet; pip install oslo_log; pip install jsonschema
+
+- name: git clone kuryr-libnetwork
+  shell: cd /var/lib/kuryr;git clone -b stable/rocky https://git.openstack.org/openstack/kuryr-libnetwork.git
+- name: checkout specific-branch
+  shell: cd /var/lib/kuryr/kuryr-libnetwork; git pull https://git.openstack.org/openstack/kuryr-libnetwork refs/changes/23/426623/5
+- name: change owner of kuryr-libnetwork
+  shell: chown -R kuryr:kuryr /var/lib/kuryr/kuryr-libnetwork
+- name: install requirement pkg for kuryr-libnetwork
+  shell: cd /var/lib/kuryr/kuryr-libnetwork; pip install -r requirements.txt; python setup.py install
+
+#- name: Generate a sample configuration file
+#  shell: su -s /bin/sh -c "./tools/generate_config_file_samples.sh" kuryr
+#  shell: su -s /bin/sh -c "cp etc/kuryr.conf.sample /etc/kuryr/kuryr.conf" kuryr
+
+- name: copy kuryr.conf and kuryr-libnetwork.service
+  copy:
+    src: ./files/kuryr.conf
+    dest: /etc
+    owner: kuryr
+    group: kuryr
+    mode: 644
+  copy:
+    src: ./files/kuryr-libnetwork.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: 644
+- name: restart kuryr-libnetwork and docker
+  shell: sysetmctl enable kuryr-libnetwork; systemctl start kuryr-libnetwork; systemctl restart docker

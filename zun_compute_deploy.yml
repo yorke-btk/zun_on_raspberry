@@ -1,0 +1,70 @@
+#
+# zun_compute_deploy.yml
+#
+
+- name: group add zun 
+  shell: groupadd --system zun
+- name: user add zun 
+  shell: useradd --home-dir "/var/lib/zun" --create-home --system --shell /bin/false -g zun zun
+- name: make /etc/kuryr
+  file:
+    path=/etc/zun
+    state=directory
+    owner=zun
+    group=zun
+    mode=0744 
+- name: git clone zun
+  shell: cd /var/lib/zun;git clone https://git.openstack.org/openstack/zun.git
+- name: git pull specific branch
+  shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
+- name: change owner of zun 
+  shell: chown -R zun:zun /var/lib/zun/zun
+- name: install requirement pkg for zun_compute 
+  shell: cd /var/lib/zun/zun; pip install -r requirements.txt; python setup.py install
+
+- name: Configure sudoer for zun users
+  lineinfile:
+    create: yes
+    dest: /etc/sudoers.d/zun-rootwrap
+    line: "zun ALL=(root) NOPASSWD: /usr/local/bin/zun-rootwrap /etc/zun/rootwrap.conf *"
+    state: present 
+- name: copy zun.conf and zun-compute.service
+  copy:
+    src: ./files/zun.conf
+    dest: /etc
+    owner: zun
+    group: zun
+    mode: 644
+  copy:
+    src: ./files/zun-compute.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: 644
+
+- name: make /etc/systemd/system/docker.service.d
+  file:
+    path=/etc/systemd/system/docker.service.d
+    state=directory
+    owner=root
+    group=root
+    mode=0744
+- name: copy docker.conf
+  copy:
+    src: ./files/docker.conf
+    dest: /etc/systemd/system/docker.service.d
+    owner: root
+    group: root
+    mode: 644
+
+- name: reload docker config
+  shell: systemctl daemon-reload
+- name: restart docker
+  shell: systemctl restart docker
+
+- name: restart kuryr-libnetwork
+  shell: systemctl restart kuryr-libnetwork
+
+- name: start zun-compute
+  shell: systemctl enable zun-compute; systemctl start zun-compute
+
