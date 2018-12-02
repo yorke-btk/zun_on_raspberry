@@ -1,21 +1,22 @@
-Deploy Zun-compute of Openstack Projects on Raspberry Pi
+Deploy Zun-compute on Raspberry Pi
 ====
 
-Overview
-This project is Ansible code sets to deploy Zun-compute on Raspberry Pi.
-These are still TBD.
+## Overview
+This project is Ansible code sets to deploy Zun-compute on Raspberry Pi.  
+Zun is an OpenStack container service.  
 
-= my environment
-OpenStack version: pike
-host OS (controller node): Ubuntu 16.04
-host OS (raspberry pi): raspbian 9.4
+## Environment
+OpenStack version: pike  
+host OS (controller node): Ubuntu 16.04  
+host OS (raspberry pi): raspbian 9.4  
 
-I'm going to add the description to deploy zun(controller) on OpenStack latter. 
+I'm going to add the description to deploy zun(controller) on OpenStack latter.   
 
 
 ## Description
-I'm writing them based on <https://docs.openstack.org/zun/latest/install/compute-install-ubuntu.html#install-and-configure-components>.
-The role of these codes is following.
+I'm writing them based on <https://docs.openstack.org/zun/latest/install/compute-install.html>.  
+The role of these codes is following.  
+These are still TBD.  
 
 - check_ansible.sh: Checking grammer of *.yml
 - run_ansible.sh: run ansible
@@ -28,10 +29,10 @@ The role of these codes is following.
 - l3_agent_deploy.yml(TBD): yml file to deploy neutron-l3-agent
 
 
-- files/: Some files to execute daemons (zun-compute.service, zun.conf, etc...)
+- files/: Some files to execute daemons (zun-compute.service, zun.conf, etc...)  
           You may replace some parameters (IP Address, user name, password) in these files for your environment.
  
-- inventory/: configure compute node IP Address.
+- inventory/: configure compute node IP Address.  
               You may replace some parameters (IP Address, user name, password) in these files for your environment.
 
 ## Demo
