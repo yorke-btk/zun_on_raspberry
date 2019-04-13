@@ -2,10 +2,10 @@
 # zun_compute_deploy.yml
 #
 
-#- name: group add zun 
-#  shell: groupadd --system zun
-#- name: user add zun 
-#  shell: useradd --home-dir "/var/lib/zun" --create-home --system --shell /bin/false -g zun zun
+- name: group add zun 
+  shell: groupadd --system zun
+- name: user add zun 
+  shell: useradd --home-dir "/var/lib/zun" --create-home --system --shell /bin/false -g zun zun
 - name: make /etc/kuryr
   file:
     path=/etc/zun
@@ -13,10 +13,10 @@
     owner=zun
     group=zun
     mode=0744 
-#- name: git clone zun
-#  shell: cd /var/lib/zun;git clone https://git.openstack.org/openstack/zun.git /stable/queens
-#- name: git pull specific branch
-#  shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
+- name: git clone zun
+  shell: cd /var/lib/zun;git clone https://git.openstack.org/openstack/zun.git /stable/queens
+- name: git pull specific branch
+  shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
 - name: change owner of zun 
   shell: chown -R zun:zun /var/lib/zun/zun
 

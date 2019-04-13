@@ -1,4 +1,6 @@
 Deploy Zun-compute on Raspberry Pi
+
+冪等性とか考えてません、、
 ====
 
 ## Overview
