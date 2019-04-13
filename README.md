@@ -30,7 +30,7 @@ The role of these codes is following.
 
 
 - files/: Some files to execute daemons (zun-compute.service, zun.conf, etc...)  
-          You may replace some parameters (IP Address, user name, password) in these files for your environment.
+          You may replace some parameters ( user name, password) in these files for your environment.
  
 - inventory/: configure compute node IP Address.  
               You may replace some IP Addresses in these files for your environment.
