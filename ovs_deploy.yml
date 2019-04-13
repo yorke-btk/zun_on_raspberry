@@ -73,6 +73,9 @@
     group: neutron
     mode: 0644
 
+- name: work well but TBD....
+  shell: cp /usr/local/libexec/kuryr/ovs /usr/local/libexec/kuryr/binding_failed 
+
 - name: add-br
   shell: ovs-vsctl add-br br-ex
 - name: restart neutron-ovs-switch
