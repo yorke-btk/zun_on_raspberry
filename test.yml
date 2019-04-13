@@ -1,0 +1,14 @@
+- name: copy
+  template:
+    src: ./files/ml2_conf.ini
+    dest: /etc/neutron/plugins/ml2
+    owner: neutron
+    group: neutron
+    mode: 0644
+- name: copy
+  template:
+    src: ./files/linuxbridge_agent.ini
+    dest: /etc/neutron/plugins/ml2
+    owner: neutron
+    group: neutron
+    mode: 0644

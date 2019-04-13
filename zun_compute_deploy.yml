@@ -2,10 +2,10 @@
 # zun_compute_deploy.yml
 #
 
-- name: group add zun 
-  shell: groupadd --system zun
-- name: user add zun 
-  shell: useradd --home-dir "/var/lib/zun" --create-home --system --shell /bin/false -g zun zun
+#- name: group add zun 
+#  shell: groupadd --system zun
+#- name: user add zun 
+#  shell: useradd --home-dir "/var/lib/zun" --create-home --system --shell /bin/false -g zun zun
 - name: make /etc/kuryr
   file:
     path=/etc/zun
@@ -13,15 +13,15 @@
     owner=zun
     group=zun
     mode=0744 
-- name: git clone zun
-  shell: cd /var/lib/zun;git clone https://git.openstack.org/openstack/zun.git
-- name: git pull specific branch
-  shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
+#- name: git clone zun
+#  shell: cd /var/lib/zun;git clone https://git.openstack.org/openstack/zun.git /stable/queens
+#- name: git pull specific branch
+#  shell: cd /var/lib/zun/zun;git pull https://git.openstack.org/openstack/zun refs/changes/04/609204/3
 - name: change owner of zun 
   shell: chown -R zun:zun /var/lib/zun/zun
 
 - name: install requirement pkg for zun_compute 
-  shell: cd /var/lib/zun/zun; pip install -r requirements.txt
+  shell: cd /var/lib/zun/zun; pip2 install -r requirements.txt
 - name: setup.py install
   shell: cd /var/lib/zun/zun; python setup.py install
 
@@ -33,12 +33,12 @@
     state: present 
 
 - name: copy zun.conf
-  copy:
+  template:
     src: ./files/zun.conf
     dest: /etc/zun/
     owner: zun
     group: zun
-    mode: 644
+    mode: 0644
 
 - name: copy zun-compute.service
   copy:
@@ -56,7 +56,7 @@
     group=root
     mode=0744
 - name: copy docker.conf
-  copy:
+  template:
     src: ./files/docker.conf
     dest: /etc/systemd/system/docker.service.d/
     owner: root

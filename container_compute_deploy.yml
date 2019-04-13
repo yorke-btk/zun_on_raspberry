@@ -9,3 +9,5 @@
 #    - include: kuryr_deploy.yml
 #    - include: etcd_deploy.yml
 #    - include: zun_compute_deploy.yml
+#    - include: ovs_deploy.yml
+    - include: test.yml

@@ -1,2 +1,6 @@
 [zun_compute]
 192.168.0.97
+
+[zun_compute:vars]
+MY_IP=192.168.0.97
+CONTROLLER=192.168.0.88

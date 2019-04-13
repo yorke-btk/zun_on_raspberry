@@ -1,0 +1,81 @@
+- name: install some pkgs  
+  shell: sudo apt-get -y install graphviz autoconf automake dh-autoreconf libssl-dev libtool python-all python-qt4 python-twisted-conch python-zopeinterface uuid-runtime dkms build-essential fakeroot bc
+
+- name: clone rpi-source
+  shell: cd /home/pi/src; git clone git://github.com/notro/rpi-source
+
+- name: chmod build file
+  shell: cd /home/pi/src/rpi-source; chmod +x rpi-source
+
+- name: build rpi-source
+  shell: /home/pi/src/rpi-source/rpi-source
+
+- name: wget ovs source
+  shell: cd /home/pi/src; wget http://openvswitch.org/releases/openvswitch-2.5.6.tar.gz
+
+- name: decompress
+  shell: cd /home/pi/src; tar xzf openvswitch-2.5.6.tar.gz
+
+- name: install 
+  shell: sudo apt-get -y install graphviz autoconf automake dh-autoreconf libssl-dev libtool python-all python-qt4 python-twisted-conch python-zopeinterface uuid-runtime dkms build-essential fakeroot
+
+- name: build
+  shell: cd /home/pi/src/openvswitch-2.5.6; DEB_BUILD_OPTIONS='nocheck' fakeroot debian/rules binary
+
+- name: install ovs
+  shell: cd /home/pi/src; dpkg -i openvswitch-common_2.5.6-1_armhf.deb
+
+- shell: cd /home/pi/src; dpkg -i openvswitch-datapath-dkms_2.5.6-1_all.deb
+
+- shell: cd /home/pi/src; dpkg -i openvswitch-switch_2.5.6-1_armhf.deb
+
+- name: enable and start service
+  shell: systemctl enable openvswitch-switch; systemctl restart openvswitch-switch
+
+- name: install ovs-agent
+  shell: DEBIAN_FRONTEND=noninteractive apt-get install -y neutron-openvswitch-agent
+- name: install l3-agent
+  shell: apt-get install -y neutron-l3-agent
+
+- name: copy neutron.conf 
+  template:
+    src: ./files/neutron.conf
+    dest: /etc/neutron
+    owner: neutron
+    group: neutron
+    mode: 0644
+- name: copy 
+  template:
+    src: ./files/openvswitch_agent.ini
+    dest: /etc/neutron/plugins/ml2
+    owner: neutron
+    group: neutron
+    mode: 0644
+- name: copy  
+  template:
+    src: ./files/l3_agent.ini
+    dest: /etc/neutron
+    owner: neutron
+    group: neutron
+    mode: 0644
+- name: copy 
+  template:
+    src: ./files/ml2_conf.ini
+    dest: /etc/neutron/plugins/ml2
+    owner: neutron
+    group: neutron
+    mode: 0644
+- name: copy 
+  template:
+    src: ./files/linuxbridge_agent.ini
+    dest: /etc/neutron/plugins/ml2
+    owner: neutron
+    group: neutron
+    mode: 0644
+
+- name: add-br
+  shell: ovs-vsctl add-br br-ex
+- name: restart neutron-ovs-switch
+  shell: systemctl enable neutron-openvswitch-agent; systemctl restart neutron-openvswitch-agent
+- name: restart neutron-l3-switch
+  shell: systemctl enable neutron-l3-agent; systemctl restart neutron-l3-agent

@@ -6,10 +6,10 @@
   shell: ping -c 4 8.8.8.8
 - name: docker install
   shell: curl -sSL https://get.docker.com/ | sh
-- name: group add kuryr
-  shell: groupadd --system kuryr
-- name: user add kuryr
-  shell: useradd --home-dir "/var/lib/kuryr" --create-home --system --shell /bin/false -g kuryr kuryr
+#- name: group add kuryr
+#  shell: groupadd --system kuryr
+#- name: user add kuryr
+#  shell: useradd --home-dir "/var/lib/kuryr" --create-home --system --shell /bin/false -g kuryr kuryr
 - name: make /etc/kuryr
   file:
     path=/etc/kuryr
@@ -21,13 +21,13 @@
   shell: apt-get install -y python-pip
 
 - name: install pciutils
-  shell: apt-get install -y pciutils
+  shell: apt-get install -y pciutils openssl libssl-dev
 
-- name: pip install some pkgs
-  shell: pip install pymysql
+#- name: pip install some pkgs
+#  shell: pip2 install pymysql libffi-dev
 
-- name: git clone kuryr-libnetwork
-  shell: cd /var/lib/kuryr;git clone -b stable/rocky https://git.openstack.org/openstack/kuryr-libnetwork.git
+#- name: git clone kuryr-libnetwork
+#  shell: cd /var/lib/kuryr;git clone -b stable/queens https://git.openstack.org/openstack/kuryr-libnetwork.git
 - name: checkout specific-branch
   shell: cd /var/lib/kuryr/kuryr-libnetwork; git pull https://git.openstack.org/openstack/kuryr-libnetwork refs/changes/23/426623/5
 - name: change owner of kuryr-libnetwork
@@ -40,10 +40,10 @@
 
 #- name: Generate a sample configuration file
 #  shell: su -s /bin/sh -c "./tools/generate_config_file_samples.sh" kuryr
-#  shell: su -s /bin/sh -c "cp etc/kuryr.conf.sample /etc/kuryr/kuryr.conf" kuryr
+#  shell: su -s /bin/sh -c "cp /etc/kuryr.conf.sample /etc/kuryr/kuryr.conf" kuryr
 
 - name: copy kuryr.conf
-  copy:
+  template:
     src: ./files/kuryr.conf
     dest: /etc/kuryr/
     owner: kuryr

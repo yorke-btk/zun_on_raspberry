@@ -1,1 +1,1 @@
-ansible-playbook -C -i inventory/hosts container_compute_deploy.yml
+ansible-playbook -C -i inventory/hosts -u pi container_compute_deploy.yml
