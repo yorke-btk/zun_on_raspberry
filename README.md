@@ -16,7 +16,6 @@ I'm going to add the description to deploy zun(controller) on OpenStack latter.
 ## Description
 I'm writing them based on <https://docs.openstack.org/zun/latest/install/compute-install.html>.  
 The role of these codes is following.  
-These are still TBD.  
 
 - check_ansible.sh: Checking grammer of *.yml
 - run_ansible.sh: run ansible
@@ -25,8 +24,7 @@ These are still TBD.
 - etcd_deploy.yml: yml file to deploy etcd.
 - kuryr_deploy.yml: yml file to deploy kuryr-libnetwork.
 - zun_compute_deploy.yml: yml file to deploy zun-compute.
-- ovs_deploy.yml(TBD): yml file to deploy OpenvSwitch 
-- l3_agent_deploy.yml(TBD): yml file to deploy neutron-l3-agent
+- ovs_deploy.yml: yml file to deploy OpenvSwitch 
 
 
 - files/: Some files to execute daemons (zun-compute.service, zun.conf, etc...)  
